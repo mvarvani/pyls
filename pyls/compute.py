@@ -7,7 +7,7 @@ from sklearn.utils.validation import check_X_y, check_random_state
 from pyls import utils
 
 
-def svd(crosscov, n_components=None, seed=None):
+def svd(crosscov, n_components=None, seed=42):
     """
     Calculates the SVD of `crosscov` and returns singular vectors/values
 
