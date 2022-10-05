@@ -258,7 +258,7 @@ def procrustes(original, permuted, singular):
     """
 
     temp = original.T @ permuted
-    N, _, P = randomized_svd(temp, n_components=min(temp.shape))
+    N, _, P = randomized_svd(temp, n_components=min(temp.shape),random_state=42)
     resamp = permuted @ singular @ (P.T @ N.T)
 
     return resamp
