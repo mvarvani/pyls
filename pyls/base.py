@@ -360,7 +360,7 @@ class BasePLS():
 
         # get original singular vectors / values
         res['x_weights'], res['singvals'], res['y_weights'], res['crosscov'],res['groups_dummy'] = \
-            self.svd(X, Y, seed=self.rs)
+            self.svd(X, Y, seed=self.rs, return_inputs=True)
         res['x_scores'] = X @ res['x_weights']
 
         
@@ -398,7 +398,7 @@ class BasePLS():
 
         return res
 
-    def svd(self, X, Y, groups=None, seed=None):
+    def svd(self, X, Y, groups=None, seed=None, return_inputs=False):
         """
         Runs SVD on cross-covariance matrix computed from `X` and `Y`
 
@@ -434,7 +434,10 @@ class BasePLS():
         crosscov = self.gen_covcorr(X, Y, groups=groups)
         U, d, V = compute.svd(crosscov, seed=seed)
 
-        return U, d, V, crosscov, groups
+        if return_inputs:
+            return U, d, V, crosscov, groups
+        else:
+            return U, d, V
 
     def bootstrap(self, X, Y, seed=None):
         """
