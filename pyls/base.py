@@ -359,10 +359,11 @@ class BasePLS():
         self.res = res = structures.PLSResults(inputs=self.inputs)
 
         # get original singular vectors / values
-        res['x_weights'], res['singvals'], res['y_weights'] = \
+        res['x_weights'], res['singvals'], res['y_weights'], res['crosscov'],res['groups_dummy'] = \
             self.svd(X, Y, seed=self.rs)
         res['x_scores'] = X @ res['x_weights']
 
+        
         if self.inputs.n_perm > 0:
             # compute permutations and get statistical significance of LVs
             d_perm, ucorrs, vcorrs = self.permutation(X, Y, seed=self.rs)
@@ -433,7 +434,7 @@ class BasePLS():
         crosscov = self.gen_covcorr(X, Y, groups=groups)
         U, d, V = compute.svd(crosscov, seed=seed)
 
-        return U, d, V
+        return U, d, V, crosscov, groups
 
     def bootstrap(self, X, Y, seed=None):
         """
