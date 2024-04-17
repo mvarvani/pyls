@@ -363,6 +363,7 @@ class BasePLS():
             self.svd(X, Y, seed=self.rs)
         res['x_scores'] = X @ res['x_weights']
 
+        
         if self.inputs.n_perm > 0:
             # compute permutations and get statistical significance of LVs
             d_perm, ucorrs, vcorrs = self.permutation(X, Y, seed=self.rs)
@@ -432,6 +433,13 @@ class BasePLS():
         # generate cross-covariance matrix and determine # of components
         crosscov = self.gen_covcorr(X, Y, groups=groups)
         U, d, V = compute.svd(crosscov, seed=seed)
+
+        print(crosscov.shape)
+        print(groups)
+        print(groups.shape)
+        #sys.exit()
+        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_crosscov.csv',crosscov)
+        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_groups.csv',groups)
 
         return U, d, V
 
