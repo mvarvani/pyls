@@ -359,8 +359,8 @@ class BasePLS():
         self.res = res = structures.PLSResults(inputs=self.inputs)
 
         # get original singular vectors / values
-        res['x_weights'], res['singvals'], res['y_weights'], res['crosscov'],res['groups_dummy'] = \
-            self.svd(X, Y, seed=self.rs, return_inputs=True)
+        res['x_weights'], res['singvals'], res['y_weights'] = \
+            self.svd(X, Y, seed=self.rs)
         res['x_scores'] = X @ res['x_weights']
 
         
@@ -398,7 +398,7 @@ class BasePLS():
 
         return res
 
-    def svd(self, X, Y, groups=None, seed=None, return_inputs=False):
+    def svd(self, X, Y, groups=None, seed=None):
         """
         Runs SVD on cross-covariance matrix computed from `X` and `Y`
 
@@ -434,10 +434,14 @@ class BasePLS():
         crosscov = self.gen_covcorr(X, Y, groups=groups)
         U, d, V = compute.svd(crosscov, seed=seed)
 
-        if return_inputs:
-            return U, d, V, crosscov, groups
-        else:
-            return U, d, V
+        print(crosscov.shape)
+        print(groups)
+        print(groups.shape)
+        #sys.exit()
+        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_crosscov.csv',crosscov)
+        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_groups.csv',groups)
+
+        return U, d, V
 
     def bootstrap(self, X, Y, seed=None):
         """

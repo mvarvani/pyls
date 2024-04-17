@@ -194,31 +194,33 @@ class BehavioralPLS(BasePLS):
         groups = utils.dummy_code(self.inputs.groups, self.inputs.n_cond)
         res['y_loadings'] = self.gen_covcorr(res['x_scores'], Y, groups)
 
-        if self.inputs.n_boot > 0:
-            # compute bootstraps
-            distrib, u_sum, u_square = self.bootstrap(X, Y, self.rs)
+        if False:
 
-            # add original scaled singular vectors back in
-            bs = res['x_weights'] @ res['singvals']
-            u_sum, u_square = u_sum + bs, u_square + (bs ** 2)
+            if self.inputs.n_boot > 0:
+                # compute bootstraps
+                distrib, u_sum, u_square = self.bootstrap(X, Y, self.rs)
 
-            # calculate bootstrap ratios and confidence intervals
-            bsrs, uboot_se = compute.boot_rel(bs, u_sum, u_square,
-                                              self.inputs.n_boot + 1)
-            corrci = np.stack(compute.boot_ci(distrib, ci=self.inputs.ci), -1)
+                # add original scaled singular vectors back in
+                bs = res['x_weights'] @ res['singvals']
+                u_sum, u_square = u_sum + bs, u_square + (bs ** 2)
 
-            # update results.boot_result dictionary
-            res['bootres'].update(dict(x_weights_normed=bsrs,
-                                       x_weights_stderr=uboot_se,
-                                       y_loadings=res['y_loadings'].copy(),
-                                       y_loadings_boot=distrib,
-                                       y_loadings_ci=corrci,
-                                       bootsamples=self.bootsamp))
+                # calculate bootstrap ratios and confidence intervals
+                bsrs, uboot_se = compute.boot_rel(bs, u_sum, u_square,
+                                                self.inputs.n_boot + 1)
+                corrci = np.stack(compute.boot_ci(distrib, ci=self.inputs.ci), -1)
 
-        # compute cross-validated prediction-based metrics
-        if self.inputs.test_split is not None and self.inputs.test_size > 0:
-            r, r2 = self.crossval(X, Y, groups=self.dummy, seed=self.rs)
-            res['cvres'].update(dict(pearson_r=r, r_squared=r2))
+                # update results.boot_result dictionary
+                res['bootres'].update(dict(x_weights_normed=bsrs,
+                                        x_weights_stderr=uboot_se,
+                                        y_loadings=res['y_loadings'].copy(),
+                                        y_loadings_boot=distrib,
+                                        y_loadings_ci=corrci,
+                                        bootsamples=self.bootsamp))
+
+            # compute cross-validated prediction-based metrics
+            if self.inputs.test_split is not None and self.inputs.test_size > 0:
+                r, r2 = self.crossval(X, Y, groups=self.dummy, seed=self.rs)
+                res['cvres'].update(dict(pearson_r=r, r_squared=r2))
 
         # get rid of the stupid diagonal matrix
         res['varexp'] = np.diag(compute.varexp(res['singvals']))
