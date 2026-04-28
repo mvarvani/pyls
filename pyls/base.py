@@ -354,6 +354,7 @@ class BasePLS():
         results : :obj:`pyls.structures.PLSResults`
             Results of PLS (not including PLS type-specific outputs)
         """
+        
 
         # initate results structure
         self.res = res = structures.PLSResults(inputs=self.inputs)
@@ -434,12 +435,12 @@ class BasePLS():
         crosscov = self.gen_covcorr(X, Y, groups=groups)
         U, d, V = compute.svd(crosscov, seed=seed)
 
-        print(crosscov.shape)
-        print(groups)
-        print(groups.shape)
+        # print('crosscov.shape=',crosscov.shape)
+        # print('groups:', groups)
+        # print('groups.shape:',groups.shape)
         #sys.exit()
-        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_crosscov.csv',crosscov)
-        np.savetxt('/home/ROBARTS/mvarvani/hippunfold-pls/debug_groups.csv',groups)
+        np.savetxt('/home/UWO/mvarvani/hippunfold-pls/debug_crosscov.csv',crosscov)
+        np.savetxt('/home/UWO/mvarvani/hippunfold-pls/debug_groups.csv',groups)
 
         return U, d, V
 

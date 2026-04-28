@@ -194,7 +194,7 @@ class BehavioralPLS(BasePLS):
         groups = utils.dummy_code(self.inputs.groups, self.inputs.n_cond)
         res['y_loadings'] = self.gen_covcorr(res['x_scores'], Y, groups)
 
-        if False:
+        if True:
 
             if self.inputs.n_boot > 0:
                 # compute bootstraps

@@ -76,13 +76,14 @@ def xcorr(X, Y, norm=False, covariance=False):
     """
 
     check_X_y(X, Y, multi_output=True)
+    eps = 1e-12
 
     # we could just use scipy.stats zscore but if we do this we retain the
     # original data structure; if pandas dataframes were given, a dataframe
     # will be returned
     if not covariance:
-        Xn = (X - X.mean(axis=0)) / X.std(axis=0, ddof=1)
-        Yn = (Y - Y.mean(axis=0)) / Y.std(axis=0, ddof=1)
+        Xn = (X - X.mean(axis=0)) / (X.std(axis=0, ddof=1) + eps)
+        Yn = (Y - Y.mean(axis=0)) / (Y.std(axis=0, ddof=1) + eps)
     else:
         Xn, Yn = X - X.mean(0, keepdims=True), Y - Y.mean(0, keepdims=True)
 
